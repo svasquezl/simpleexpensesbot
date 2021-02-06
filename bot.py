@@ -61,9 +61,7 @@ def on_earn_money(message):
 def on_spend_money(message):
     bot.send_chat_action(message.chat.id, 'typing')
     parts = re.match(
-        r"^(gaste|gasté|gg) ([+-]?([0-9]*[.])?[0-9]+)$",  
-        message.text, 
-        re.IGNORECASE)
+        r"^(gaste|gasté|gg) ([+-]?([0-9]*[.])?[0-9]+)$", message.text, re.IGNORECASE)
     amount = float(parts[2])
     control = logic.spend_money (message.from_user.id, amount)
     bot.reply_to(
