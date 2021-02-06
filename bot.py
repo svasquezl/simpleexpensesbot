@@ -161,7 +161,11 @@ def on_remove_record(message):
 #########################################################
 @bot.message_handler(func=lambda message: True)
 def on_fallback(message):
-    pass
+    bot.send_chat_action(message.chat.id, 'typing')
+    sleep(1)
+    response = logic.get_fallback_message(message.text)
+    bot.reply_to(message, response)
+
 #########################################################
 if __name__ == '__main__':
     bot.polling(timeout=20)
