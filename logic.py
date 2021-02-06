@@ -88,3 +88,14 @@ def spend_money(user_id, amount):
   db.session.add(spend)
   db.session.commit()
   return True
+
+def list_earnings (user_id, month, year):
+  earnings = db.session.query(Earning).filter_by(
+    accounts_id=user_id
+    ).filter(
+      extract('month', Earning.when) == month
+      ).filter(
+        extract('year', Earning.when) == year
+        ).all()
+  db.session.commit()
+  return earnings

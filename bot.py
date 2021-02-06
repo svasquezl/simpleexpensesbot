@@ -73,7 +73,32 @@ def on_spend_money(message):
 #########################################################
 @bot.message_handler(regexp=r"^(listar ganancias|lg) en ([0-9]{1,2}) de ([0-9]{4})$")
 def on_list_earnings(message):
-    pass
+    bot.send_chat_action(message.chat.id, 'typing')
+    parts = re.match(r"^(listar ganancias|lg) en ([0-9]{1,2}) de ([0-9]{4})$", message.text,re.IGNORECASE)
+
+    month = int(parts[2])
+    year = int(parts[3])
+
+    if month < 1 or month > 12:
+        bot.reply_to(message, f"Error, mes inválido: {month}")
+        return
+    if year < 1990 or year > 2050:
+        bot.reply_to(message, f"Error, año inválido: {year}")
+        return
+    earnings = logic.list_earnings (message.from_user.id, month, year)
+    text = ""
+    total = 0
+    if not earnings:
+        text = f"\U0001F633 No tienes ganancias registradas en {month}/{year}"
+    else:
+        text = "``` Listado de ganancias:\n\n"
+        for e in earnings:
+            total += e.amount
+            text += f"| {e.id} | ${e.amount} | ({e.when.strftime('%d/%m/%Y - %H:%M')}) |\n"
+            text += f"\nTOTAL = ${total}"
+            text += "```"
+    bot.reply_to(message, text, parse_mode="Markdown")
+
 #########################################################
 @bot.message_handler(regexp=r"^(listar gastos|lgg) en ([0-9]{1,2}) de ([0-9]{4})$")
 def on_list_spendings(message):
