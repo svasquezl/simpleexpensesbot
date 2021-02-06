@@ -41,7 +41,21 @@ def on_command_about(message):
 #########################################################
 @bot.message_handler(regexp=r"^(gane|gané|g) ([+-]?([0-9]*[.])?[0-9]+)$")
 def on_earn_money(message):
-    pass
+    bot.send_chat_action(message.chat.id, 'typing')
+    parts = re.match(
+        r"^(gane|gané|g) ([+-]?([0-9]*[.])?[0-9]+)$",
+        message.text,
+        re.IGNORECASE)
+
+    # print (parts.groups())
+
+    amount = float(parts[2])
+    control = logic.earn_money (message.from_user.id, amount)
+    bot.reply_to(
+        message,
+        f"\U0001F4B0 ¡Dinero ganado!: {amount}" if control == True
+        else "\U0001F4A9 Tuve problemas registrando la transacción, ejecuta /start y vuelve a intentarlo")
+
 #########################################################
 @bot.message_handler(regexp=r"^(gaste|gasté|gg) ([+-]?([0-9]*[.])?[0-9]+)$")
 def on_spend_money(message):
