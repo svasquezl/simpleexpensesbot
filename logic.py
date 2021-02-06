@@ -99,3 +99,16 @@ def list_earnings (user_id, month, year):
         ).all()
   db.session.commit()
   return earnings
+
+def list_spendings (user_id, month, year):
+  spendings = db.session.query(Spending
+    ).filter_by(
+      accounts_id=user_id
+      ).filter(
+        extract('month', Spending.when) == month
+        ).filter(
+          extract('year', Spending.when) == year
+          ).all()
+  db.session.commit()
+  return spendings
+
