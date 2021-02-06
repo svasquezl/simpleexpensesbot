@@ -138,7 +138,26 @@ def on_get_balance(message):
 #########################################################
 @bot.message_handler(regexp=r"^(remover|r) (ganancia|g|gasto|gg) ([0-9]+)$")
 def on_remove_record(message):
-    pass
+    bot.send_chat_action(message.chat.id, 'typing')
+    parts = re.match(
+    r"^(remover|r) (ganancia|g|gasto|gg) ([0-9]+)$", message.text, re.IGNORECASE)
+    record_type = parts[2]
+    index = int(parts[3])
+    if record_type not in ["ganancia", "g", "gasto", "gg"]:
+        bot.reply_to(message, f"Error, tipo de registro inválido: {record_type}")
+        return
+    if index < 0:
+        bot.reply_to(message, f"Error, índice inválido: {index}")
+        return
+    response = False
+    if record_type == "ganancia" or record_type == "g":
+        response = logic.remove_earning (message.from_user.id, index)
+    elif record_type == "gasto" or record_type == "gg":
+        response = logic.remove_spending (message.from_user.id, index)
+    if response:
+        bot.reply_to(message, f"Registro removido: {record_type}, {index}")
+    else:
+        bot.reply_to(message, f"No se pudo remover el registro: {index}")
 #########################################################
 @bot.message_handler(func=lambda message: True)
 def on_fallback(message):

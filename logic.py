@@ -112,3 +112,36 @@ def list_spendings (user_id, month, year):
   db.session.commit()
   return spendings
 
+def remove_earning (user_id, index):
+  record = db.session.query(Earning).filter(
+    Earning.accounts_id == user_id
+    ).filter(
+      Earning.id == index
+      ).first()
+  if not record:
+    db.session.rollback()
+    return False
+  control = update_account(user_id, record.amount * -1)
+  if not control:
+    db.session.rollback()
+    return False
+  db.session.delete(record)
+  db.session.commit()
+  return True
+
+def remove_spending (user_id, index):
+  record = db.session.query(Spending).filter(
+    Spending.accounts_id == user_id
+    ).filter(
+      Spending.id == index
+      ).first()
+  if not record:
+    db.session.rollback()
+    return False
+  control = update_account(user_id, record.amount)
+  if not control:
+    db.session.rollback()
+    return False
+  db.session.delete(record)
+  db.session.commit()
+  return True
